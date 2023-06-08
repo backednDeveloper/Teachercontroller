@@ -1,9 +1,7 @@
 package com.example.restcontrollerdemo.entity;
 
 import lombok.*;
-import org.apache.catalina.Group;
 
-import javax.security.auth.Subject;
 import java.util.List;
 
 @Getter
@@ -19,8 +17,6 @@ public class Teacher {
     private int salary;
     private List<Group> groups;
     private List<Subject> subjects;
-
-    // Getter ve Setter metotları burada kaldırıldı
 }
 
 
