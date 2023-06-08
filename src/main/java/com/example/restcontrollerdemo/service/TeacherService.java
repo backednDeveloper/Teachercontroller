@@ -17,7 +17,8 @@ public class TeacherService {
 
     public List<Teacher> createTeacherService(Teacher teacher) {
         teacher.setID(Math.toIntExact(++sequence));
-        return List.of(teacher);
+        teacherServices.add(teacher);
+        return teacherServices;
     }
 
     public Teacher updateTeacherService(Teacher teacherService, long id) {
