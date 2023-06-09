@@ -22,9 +22,9 @@ public class TeacherController {
         return teacherService.getAllTeacher();
     }
 
-    @GetMapping("/{id}")
-    public Teacher searchTeacherWithId(@PathVariable long id) {
-        return teacherService.getSearchTeacher(id);
+    @GetMapping("/{id}/{name}")
+    public Teacher searchTeacherWithId(@PathVariable long id, @RequestBody Teacher name) {
+        return teacherService.getSearchTeacher(id, name);
     }
 
     @PostMapping("/create")

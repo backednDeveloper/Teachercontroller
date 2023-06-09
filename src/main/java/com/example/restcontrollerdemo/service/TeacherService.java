@@ -38,9 +38,9 @@ public class TeacherService {
         return oldTeacher;
     }
 
-    public Teacher getSearchTeacher(long id) {
+    public Teacher getSearchTeacher(long id , Teacher name) {
         Teacher searchTeacher = teacherServices.stream()
-                .filter(teacher -> teacher.getID() == id)
+                .filter(teacher -> teacher.getID() == id || teacher.getName().equals(name))
                 .findFirst()
                 .orElse(null);
         if (searchTeacher == null) {
