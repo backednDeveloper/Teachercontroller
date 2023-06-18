@@ -17,12 +17,11 @@ public class Registrationform extends JDialog {
     private JPanel registerpanel;
     private JPasswordField txtpassword;
     private JPasswordField txtcheckpassword;
-    private JTextField txtID;
     private Teacher teacher;
 
     public Registrationform (JFrame parent){
         super(parent);
-        setTitle("Create new account");
+        setTitle("Creat New Profile ;)");
         setContentPane(registerpanel);
         setMinimumSize(new Dimension(450, 474));
         setModal(true);
@@ -39,58 +38,57 @@ public class Registrationform extends JDialog {
                 String surname = txtSurname.getText();
                 int age = Integer.parseInt(txtAge.getText());
                 int salary = Integer.parseInt(txtSalary.getText());
-                String scienceName = txtSciencename.getText();
-                String ID = txtID.getText();
-                String password = String.valueOf(txtpassword.getPassword());
-                String checkpassword = String.valueOf(txtcheckpassword.getPassword());
-                if(name.isEmpty() || surname.isEmpty() || age==0 || scienceName.isEmpty() ||
-                        salary==0 || password.isEmpty() || checkpassword.isEmpty() || ID.isEmpty()) {
+                String sciencename = txtSciencename.getText();
+                int password = Integer.parseInt(txtpassword.getText());
+                int checkpassword = Integer.parseInt(txtcheckpassword.getText());
+                if(name.isEmpty() || surname.isEmpty() || age <= 0 || sciencename.isEmpty() ||
+                        salary<=0 || password <= 0 || checkpassword <= 0 ) {
                     JOptionPane.showMessageDialog(Registrationform.this , "Please fill all ", "Try again", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                if(!password.equals(checkpassword)){
+                if(password != checkpassword){
                     JOptionPane.showMessageDialog(Registrationform.this, "Password is not correct", "Please try again" , JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                teacher = addTeacherToDatabase(name,surname,age,salary,scienceName,password,ID);
+                teacher = addTeacherToDatabase(name,surname,age,salary,sciencename,password);
                 if(teacher==null){
-                    JOptionPane.showMessageDialog(Registrationform.this, "Tecaher is not available", "Please registered", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(Registrationform.this, "Failed to register user", "Please try again", JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
+                JOptionPane.showMessageDialog(Registrationform.this, "Teacher has been registered", "Welcome our tema", JOptionPane.INFORMATION_MESSAGE);
 
             }
             public Teacher teacher;
 
-            private Teacher addTeacherToDatabase(String name, String surname, int age, int salary, String scienceName, String password, String ID) {
+            private Teacher addTeacherToDatabase(String name, String surname, int age, int salary, String scienceName, int password) {
                 Teacher teacher = null;
                 final String DB_URL = "jdbc:mysql://localhost:3306/Teacher";
-                final String USARNAME = "root";
+                final String USERNAME = "root";
                 final String PASSWORD = "Trako123.";
-                try{
-                    Connection connection = DriverManager.getConnection(DB_URL, USARNAME, PASSWORD);
-                    Statement stm = connection.createStatement();
-                    String sql = "INSERT INTO teacher(name,surname,age,salary,scienceName,password,ID)" + "VALUES (?,?,?,?,?,?)";
-                    PreparedStatement preparedStatement = connection.prepareStatement(sql);
-                    preparedStatement.setString(1,name);
-                    preparedStatement.setString(2,surname);
-                    preparedStatement.setString(3, String.valueOf(age));
-                    preparedStatement.setString(4, String.valueOf(salary));
-                    preparedStatement.setString(5,scienceName);
-                    preparedStatement.setString(6,password);
+                try {
+                    Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+                    String sql = "INSERT INTO teacher (name, surname, age, salary, scienceName, password) VALUES (?, ?, ?, ?, ?, ?)";
+                    PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                    preparedStatement.setString(1, name);
+                    preparedStatement.setString(2, surname);
+                    preparedStatement.setInt(3, age);
+                    preparedStatement.setInt(4, salary);
+                    preparedStatement.setString(5, scienceName);
+                    preparedStatement.setInt(6, password);
                     int addedRows = preparedStatement.executeUpdate();
-                    if(addedRows>0){
+                    if (addedRows > 0) {
                         teacher = new Teacher();
                         teacher.setName(name);
                         teacher.setSurname(surname);
                         teacher.setScienceName(scienceName);
                         teacher.setAge(age);
-                        teacher.setID(ID);
                         teacher.setPassword(password);
                         teacher.setSalary(salary);
                     }
-                    stm.close();
+                    preparedStatement.close();
                     connection.close();
                 } catch (SQLException e) {
-                    e.getMessage();
+                    e.printStackTrace();
                 }
                 return teacher;
             }
